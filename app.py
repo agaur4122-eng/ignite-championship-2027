@@ -10,14 +10,15 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom Styling for a Sleek Modern Look
+# Custom Styling that automatically adapts to Light and Dark modes
 st.markdown("""
     <style>
-    .main-title { font-size: 42px; font-weight: 700; color: #0E1117; text-align: center; margin-bottom: 10px; }
-    .subtitle { font-size: 18px; color: #555555; text-align: center; margin-bottom: 30px; }
-    .section-box { padding: 20px; border-radius: 10px; background-color: #F8F9FA; border-left: 5px solid #FF4B4B; margin-bottom: 25px; }
+    .main-title { font-size: 42px; font-weight: 700; text-align: center; margin-bottom: 10px; }
+    .subtitle { font-size: 18px; opacity: 0.8; text-align: center; margin-bottom: 30px; }
+    .section-box { padding: 20px; border-radius: 10px; background-color: rgba(255, 75, 75, 0.1); border-left: 5px solid #FF4B4B; margin-bottom: 25px; }
     </style>
 """, unsafe_allow_html=True)
+
 
 # 2. Header Section
 st.markdown("<div class='main-title'>Ignite National Talent Championship 2027</div>", unsafe_allow_html=True)
