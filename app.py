@@ -1,6 +1,8 @@
 import streamlit as st
 import os
+import shutil
 from datetime import datetime
+import pandas as pd
 
 # 1. Page Configuration & Professional Styling
 st.set_page_config(
@@ -18,7 +20,6 @@ st.markdown("""
     .section-box { padding: 20px; border-radius: 10px; background-color: rgba(255, 75, 75, 0.1); border-left: 5px solid #FF4B4B; margin-bottom: 25px; }
     </style>
 """, unsafe_allow_html=True)
-
 
 # 2. Header Section
 st.markdown("<div class='main-title'>Ignite National Talent Championship 2027</div>", unsafe_allow_html=True)
@@ -59,7 +60,6 @@ with st.form("submission_form", clear_on_submit=True):
     project_title = st.text_input("Project / Entry Title*", placeholder="Give your submission a catchy title")
     description = st.text_area("Brief Abstract/Description", placeholder="Tell us the core idea behind your submission (Max 150 words)")
     
-    # Dynamic Submission File Handling
     st.write("")
     st.subheader("📤 Upload Your Work")
     
@@ -77,6 +77,10 @@ with st.form("submission_form", clear_on_submit=True):
     submit_button = st.form_submit_button("Submit Entry To National Panel")
 
 # 5. Form Processing Architecture
+data_dir = "national_submissions"
+if not os.path.exists(data_dir):
+    os.makedirs(data_dir)
+
 if submit_button:
     if not (full_name and email and city and phone and school_name and project_title and terms):
         st.error("❌ Please fill out all required fields (*) and accept the terms.")
@@ -85,14 +89,10 @@ if submit_button:
     elif category != "Creative & Sci-Fi Writing" and not uploaded_video:
         st.error("❌ Please upload your 90-second performance video to complete submission.")
     else:
-        # Create a secure local directory to store entries dynamically
-        data_dir = "national_submissions"
-        if not os.path.exists(data_dir):
-            os.makedirs(data_dir)
-            
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         sanitized_name = "".join(x for x in full_name if x.isalnum())
-        folder_path = os.path.join(data_dir, f"{sanitized_name}_{timestamp}")
+        folder_name = f"{sanitized_name}_{timestamp}"
+        folder_path = os.path.join(data_dir, folder_name)
         os.makedirs(folder_path)
         
         # Save Metadata Summary Document
@@ -108,5 +108,52 @@ if submit_button:
             with open(os.path.join(folder_path, f"performance.{file_extension}"), "wb") as f:
                 f.write(uploaded_video.getbuffer())
                 
-        st.success(f"🎉 Success! Thank you {full_name}. Your entry for '{project_title}' has been securely logged on the national panel database.")
+        st.success(f"🎉 Success! Thank you {full_name}. Your entry has been logged.")
         st.balloons()
+
+# ====================================================================
+# 6. SECRET ADMIN OVERLAY (Only visible when checked)
+# ====================================================================
+st.write("")
+st.write("")
+st.divider()
+show_admin = st.checkbox("🛠️ Open Organizer Control Panel")
+
+if show_admin:
+    st.header("🔒 Central Submissions Database")
+    
+    # Read all metadata.txt files to show a live table
+    sub_folders = os.listdir(data_dir) if os.path.exists(data_dir) else []
+    
+    if len(sub_folders) == 0:
+        st.info("No entries recorded in the cloud data bank yet.")
+    else:
+        records = []
+        for folder in sub_folders:
+            meta_path = os.path.join(data_dir, folder, "metadata.txt")
+            if os.path.exists(meta_path):
+                with open(meta_path, "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+                    data_dict = {}
+                    for line in lines:
+                        if ":" in line:
+                            k, v = line.split(":", 1)
+                            data_dict[k.strip()] = v.strip()
+                    records.append(data_dict)
+        
+        if records:
+            df = pd.DataFrame(records)
+            st.dataframe(df, use_container_width=True)
+            
+            # Zip all submissions for easy local extraction
+            zip_name = "all_national_entries"
+            shutil.make_archive(zip_name, 'zip', data_dir)
+            
+            with open(f"{zip_name}.zip", "rb") as f:
+                st.download_button(
+                    label="📥 Download All Submissions & Media Files (.ZIP)",
+                    data=f,
+                    file_name=f"ignite_submissions_{datetime.now().strftime('%Y%m%d')}.zip",
+                    mime="application/zip",
+                    use_container_width=True
+                )
