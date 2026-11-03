@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstraScribe: All-India Sci-Fi & STEM Writing Championship</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0e17;
+            --bg-card: #131c2e;
+            --accent-primary: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.35);
+            --accent-secondary: #06b6d4;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        /* View Control */
+        .view {
+            display: none;
+        }
+        .view.active {
+            display: block;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Landing Page Styles */
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            max-width: 700px;
+            margin: 0 auto 2rem auto;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), #4f46e5);
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.5);
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .topic-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .topic-card:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .topic-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: var(--accent-secondary);
+        }
+
+        .topic-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Portal View Styles */
+        .portal-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--bg-deep);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        textarea.form-control {
+            min-height: 350px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .editor-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Success Card */
+        .success-box {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .success-box h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                🚀 AstraScribe
+            </div>
+            <div class="badge">All-India Edition 2026</div>
+        </header>
+
+        <!-- VIEW 1: LANDING & REGISTRATION -->
+        <div id="landingView" class="view active">
+            <div class="hero">
+                <h1>Where Scientific Vision Meets Master Storytelling</h1>
+                <p>Register for India's premier online Sci-Fi & STEM writing championship exclusively for high school students. Choose a prompt, compose your piece, and win exciting prizes!</p>
+                <button class="btn-primary" onclick="switchToPortal()">Register & Enter Writing Portal</button>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <h2 style="font-family: 'Space Grotesk', sans-serif; text-align: center; margin-bottom: 1.5rem;">Choose Your Track / Topic</h2>
+                <div class="topics-grid">
+                    <div class="topic-card">
+                        <h3>Option 1: Chronicles of 2085</h3>
+                        <p>Explore the ethical boundaries of Neural Interfaces (BCIs). What happens when memories can be backed up, edited, or traded like digital currencies?</p>
+                    </div>
+                    <div class="topic-card">
+                        <h3>Option 2: The Last Beacon of Europa</h3>
+                        <p>Set in a deep-space subsurface ocean station. Describe the moment humanity’s first automated probe makes contact with an indigenous non-carbon lifeform.</p>
+                    </div>
+                    <div class="topic-card">
+                        <h3>Option 3: Quantum Echoes</h3>
+                        <p>A thriller built around quantum superposition and cryptography, where a scientist receives encrypted warning messages from an alternate timeline.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: WRITING & SUBMISSION PORTAL -->
+        <div id="portalView" class="view">
+            <div class="portal-container" id="formWrapper">
+                <h2 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 1.5rem;">Participant Submission Portal</h2>
+                <form id="submissionForm" onsubmit="handleSubmission(event)">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" class="form-control" required placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="schoolName">School Name & City</label>
+                        <input type="text" id="schoolName" class="form-control" required placeholder="e.g., Delhi Public School, R.K. Puram, New Delhi">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gradeLevel">Grade / Standard</label>
+                        <select id="gradeLevel" class="form-control" required>
+                            <option value="">Select Grade</option>
+                            <option value="Grade 9">Grade 9</option>
+                            <option value="Grade 10">Grade 10</option>
+                            <option value="Grade 11">Grade 11</option>
+                            <option value="Grade 12">Grade 12</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="selectedTopic">Select Prompt Category</label>
+                        <select id="selectedTopic" class="form-control" required>
+                            <option value="">Choose your topic</option>
+                            <option value="Chronicles of 2085 (Neural Revolution)">Option 1: Chronicles of 2085 (Neural Revolution)</option>
+                            <option value="The Last Beacon of Europa (Astrobiology)">Option 2: The Last Beacon of Europa (Astrobiology)</option>
+                            <option value="Quantum Echoes (Quantum Cryptography)">Option 3: Quantum Echoes (Quantum Cryptography)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="storyTitle">Story Title</label>
+                        <input type="text" id="storyTitle" class="form-control" required placeholder="Give your sci-fi story a compelling title">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="storyBody">Write or Paste Your Submission (Max 2,500 words)</label>
+                        <textarea id="storyBody" class="form-control" required placeholder="Begin typing your story here..." oninput="updateWordCount()"></textarea>
+                        <div class="editor-meta">
+                            <span id="wordCountDisplay">Words: 0 / 2500</span>
+                            <span id="autosaveStatus">Draft saved locally</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="width: 100%;">Submit Final Entry</button>
+                </form>
+            </div>
+
+            <!-- SUCCESS CONFIRMATION MODAL -->
+            <div id="successView" class="portal-container" style="display: none;">
+                <div class="success-box">
+                    <h2>🎉 Submission Received Successfully!</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Thank you for participating in the AstraScribe National Championship. Your submission has been securely recorded.</p>
+                    <div style="background: var(--bg-deep); padding: 1.5rem; border-radius: 0.5rem; display: inline-block; text-align: left; margin-bottom: 1.5rem; border: 1px solid var(--border-color);">
+                        <p><strong>Submission ID:</strong> <span id="receiptId">ASTRA-89214</span></p>
+                        <p><strong>Participant:</strong> <span id="receiptName">-</span></p>
+                        <p><strong>Topic:</strong> <span id="receiptTopic">-</span></p>
+                    </div>
+                    <br>
+                    <button class="btn-primary" onclick="window.print()">Print Submission Receipt</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchToPortal() {
+            document.getElementById('landingView').classList.remove('active');
+            document.getElementById('portalView').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateWordCount() {
+            const text = document.getElementById('storyBody').value.trim();
+            const words = text === '' ? 0 : text.split(/\s+/).length;
+            document.getElementById('wordCountDisplay').textContent = `Words: ${words} / 2500`;
+        }
+
+        function handleSubmission(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('fullName').value;
+            const topic = document.getElementById('selectedTopic').value;
+            
+            // Populate receipt
+            document.getElementById('receiptName').textContent = name;
+            document.getElementById('receiptTopic').textContent = topic;
+            document.getElementById('receiptId').textContent = 'ASTRA-' + Math.floor(10000 + Math.random() * 90000);
+
+            // Hide form, show success
+            document.getElementById('submissionForm').style.display = 'none';
+            document.getElementById('successView').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
